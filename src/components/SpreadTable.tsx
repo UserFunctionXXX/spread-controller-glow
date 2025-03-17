@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PlusIcon } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface SpreadTableRowProps {
   id: string;
@@ -26,11 +27,68 @@ interface SpreadTableProps {
   onDataChange: (data: SpreadTableRowProps[]) => void;
 }
 
+// Helper function to convert formatted number string to a numeric value
+const parseFormattedNumber = (value: string): number => {
+  // Remove any non-numeric characters except the decimal point
+  // Replace comma with dot for decimal parsing
+  const cleanValue = value.replace(/[^\d,.]/g, '').replace(',', '.');
+  return parseFloat(cleanValue) || 0;
+};
+
 const SpreadTable = ({ data, onDataChange }: SpreadTableProps) => {
   const [tableData, setTableData] = useState<SpreadTableRowProps[]>(data);
   const [editingRows, setEditingRows] = useState<Record<string, boolean>>({});
+  const { toast } = useToast();
+
+  // Check if a range overlaps with existing ranges
+  const hasOverlap = (
+    id: string, 
+    minValue: number, 
+    maxValue: number
+  ): boolean => {
+    return tableData.some(row => {
+      if (row.id === id) return false; // Skip current row
+      
+      const existingMin = parseFormattedNumber(row.exposureMin);
+      const existingMax = parseFormattedNumber(row.exposureMax);
+      
+      // Check for overlap
+      return (
+        (minValue >= existingMin && minValue <= existingMax) || // Min value within existing range
+        (maxValue >= existingMin && maxValue <= existingMax) || // Max value within existing range
+        (minValue <= existingMin && maxValue >= existingMax)    // Existing range contained within new range
+      );
+    });
+  };
 
   const handleEdit = (id: string) => {
+    if (editingRows[id]) {
+      // Save changes
+      const rowToUpdate = tableData.find(row => row.id === id);
+      if (rowToUpdate) {
+        const min = parseFormattedNumber(rowToUpdate.exposureMin);
+        const max = parseFormattedNumber(rowToUpdate.exposureMax);
+        
+        if (min >= max) {
+          toast({
+            title: "Erro de validação",
+            description: "O valor mínimo deve ser menor que o valor máximo.",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        if (hasOverlap(id, min, max)) {
+          toast({
+            title: "Sobreposição de faixas",
+            description: "Esta faixa se sobrepõe a outra faixa existente.",
+            variant: "destructive"
+          });
+          return;
+        }
+      }
+    }
+    
     setEditingRows({
       ...editingRows,
       [id]: !editingRows[id]
