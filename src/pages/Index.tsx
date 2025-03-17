@@ -6,20 +6,48 @@ import SpreadTable from "@/components/SpreadTable";
 import SpreadSelector from "@/components/SpreadSelector";
 import { DollarSignIcon, ActivityIcon } from "lucide-react";
 
-// Mock data for our application
+// Mock data for our application with range exposures
 const mockTableData = [
-  { exposure: "BTC/USD", spreadIncrease: "0.2 %", totalSpread: "0.9 %" },
-  { exposure: "ETH/USD", spreadIncrease: "0.3 %", totalSpread: "1.0 %" },
-  { exposure: "SOL/USD", spreadIncrease: "0.1 %", totalSpread: "0.8 %" },
-  { exposure: "AVAX/USD", spreadIncrease: "0.4 %", totalSpread: "1.1 %" },
-  { exposure: "XRP/USD", spreadIncrease: "0.2 %", totalSpread: "0.9 %" },
+  { 
+    id: "row-1", 
+    exposureMin: "0,00", 
+    exposureMax: "1.000.000,00", 
+    spreadIncrease: "0,2 %", 
+    totalSpread: "0,9 %" 
+  },
+  { 
+    id: "row-2", 
+    exposureMin: "1.000.000,01", 
+    exposureMax: "2.000.000,00", 
+    spreadIncrease: "0,3 %", 
+    totalSpread: "1,0 %" 
+  },
+  { 
+    id: "row-3", 
+    exposureMin: "2.000.000,01", 
+    exposureMax: "3.000.000,00", 
+    spreadIncrease: "0,4 %", 
+    totalSpread: "1,1 %" 
+  },
+  { 
+    id: "row-4", 
+    exposureMin: "3.000.000,01", 
+    exposureMax: "4.000.000,00", 
+    spreadIncrease: "0,5 %", 
+    totalSpread: "1,2 %" 
+  },
 ];
 
 const SpreadControlPage = () => {
   const [currentSpread, setCurrentSpread] = useState(0.7);
+  const [tableData, setTableData] = useState(mockTableData);
   
   const handleSpreadChange = (newSpread: number) => {
     setCurrentSpread(newSpread);
+  };
+
+  const handleTableDataChange = (newData: any[]) => {
+    setTableData(newData);
   };
 
   return (
@@ -45,8 +73,11 @@ const SpreadControlPage = () => {
           </div>
           
           <div className="mt-8">
-            <h2 className="text-lg font-semibold mb-4">Tabela de Spreads</h2>
-            <SpreadTable data={mockTableData} />
+            <h2 className="text-lg font-semibold mb-4">Tabela de Spreads por Faixas</h2>
+            <SpreadTable 
+              data={tableData} 
+              onDataChange={handleTableDataChange} 
+            />
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
