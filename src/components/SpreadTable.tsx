@@ -139,7 +139,7 @@ const SpreadTable = ({ data, onDataChange }: SpreadTableProps) => {
         className="mt-2"
       >
         <PlusIcon className="mr-2 h-4 w-4" />
-        Adicionar Range
+        Adicionar Faixas
       </Button>
     </div>
   );
