@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import StatCard from "@/components/StatCard";
 import ExposureCard from "@/components/ExposureCard";
@@ -162,6 +161,7 @@ const SpreadControlPage = () => {
                 data={tableData} 
                 onDataChange={handleTableDataChange}
                 currentVolume={currentVolumeValue}
+                isContingencyActive={isContingencyActive}
               />
             </div>
             

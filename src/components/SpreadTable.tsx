@@ -26,6 +26,7 @@ interface SpreadTableProps {
   data: SpreadTableRowProps[];
   onDataChange: (data: SpreadTableRowProps[]) => void;
   currentVolume?: string;
+  isContingencyActive?: boolean; // New prop for contingency state
 }
 
 const parseFormattedNumber = (value: string): number => {
@@ -33,7 +34,12 @@ const parseFormattedNumber = (value: string): number => {
   return parseFloat(cleanValue) || 0;
 };
 
-const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) => {
+const SpreadTable = ({ 
+  data, 
+  onDataChange, 
+  currentVolume,
+  isContingencyActive = false // Default to false if not provided
+}: SpreadTableProps) => {
   const [tableData, setTableData] = useState<SpreadTableRowProps[]>(data);
   const [editingRows, setEditingRows] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
@@ -146,7 +152,9 @@ const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) =>
             <TableRow>
               <TableHead className="font-semibold">Faixa de Exposição</TableHead>
               <TableHead className="font-semibold">Spread Increase</TableHead>
-              <TableHead className="w-[100px]">Ações</TableHead>
+              {!isContingencyActive && (
+                <TableHead className="w-[100px]">Ações</TableHead>
+              )}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -166,7 +174,7 @@ const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) =>
                   }`}
                 >
                   <TableCell>
-                    {editingRows[row.id] ? (
+                    {editingRows[row.id] && !isContingencyActive ? (
                       <div className="flex items-center space-x-2">
                         <Input 
                           value={row.exposureMin}
@@ -195,7 +203,7 @@ const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) =>
                     )}
                   </TableCell>
                   <TableCell className={isBlueHighlighted ? "text-blue-700" : ""}>
-                    {editingRows[row.id] ? (
+                    {editingRows[row.id] && !isContingencyActive ? (
                       <Input 
                         value={row.spreadIncrease}
                         onChange={(e) => handleChange(row.id, 'spreadIncrease', e.target.value)}
@@ -204,31 +212,35 @@ const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) =>
                       row.spreadIncrease
                     )}
                   </TableCell>
-                  <TableCell>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => handleEdit(row.id)}
-                      className={isBlueHighlighted ? "text-blue-700 hover:text-blue-800 hover:bg-blue-100" : ""}
-                    >
-                      {editingRows[row.id] ? "Salvar" : "Editar"}
-                    </Button>
-                  </TableCell>
+                  {!isContingencyActive && (
+                    <TableCell>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => handleEdit(row.id)}
+                        className={isBlueHighlighted ? "text-blue-700 hover:text-blue-800 hover:bg-blue-100" : ""}
+                      >
+                        {editingRows[row.id] ? "Salvar" : "Editar"}
+                      </Button>
+                    </TableCell>
+                  )}
                 </TableRow>
               );
             })}
           </TableBody>
         </Table>
       </div>
-      <Button 
-        onClick={handleAddRow} 
-        variant="outline" 
-        size="sm" 
-        className="mt-2"
-      >
-        <PlusIcon className="mr-2 h-4 w-4" />
-        Adicionar Faixas
-      </Button>
+      {!isContingencyActive && (
+        <Button 
+          onClick={handleAddRow} 
+          variant="outline" 
+          size="sm" 
+          className="mt-2"
+        >
+          <PlusIcon className="mr-2 h-4 w-4" />
+          Adicionar Faixas
+        </Button>
+      )}
     </div>
   );
 };
