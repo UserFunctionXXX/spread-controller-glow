@@ -54,16 +54,8 @@ const SpreadControlPage = () => {
         
         <div className="grid gap-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <StatCard 
-              title="Número de Trades" 
-              value="202" 
-              icon={<ActivityIcon className="w-5 h-5" />}
-            />
-            <StatCard 
-              title="Volume USD" 
-              value="$ 494.223,00" 
-              icon={<DollarSignIcon className="w-5 h-5" />}
-            />
+            <ExposureCard type="LONG" value="$ 293.450,00" />
+            <ExposureCard type="SHORT" value="$ 200.773,00" />
           </div>
           
           <div className="mt-8">
@@ -75,8 +67,16 @@ const SpreadControlPage = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-            <ExposureCard type="LONG" value="$ 293.450,00" />
-            <ExposureCard type="SHORT" value="$ 200.773,00" />
+            <StatCard 
+              title="Número de Trades" 
+              value="202" 
+              icon={<ActivityIcon className="w-5 h-5" />}
+            />
+            <StatCard 
+              title="Volume USD" 
+              value="$ 494.223,00" 
+              icon={<DollarSignIcon className="w-5 h-5" />}
+            />
           </div>
         </div>
       </div>
