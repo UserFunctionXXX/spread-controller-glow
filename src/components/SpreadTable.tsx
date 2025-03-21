@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { 
   Table, 
@@ -25,13 +24,10 @@ interface SpreadTableRowProps {
 interface SpreadTableProps {
   data: SpreadTableRowProps[];
   onDataChange: (data: SpreadTableRowProps[]) => void;
-  currentVolume?: string; // Add prop for current volume
+  currentVolume?: string;
 }
 
-// Helper function to convert formatted number string to a numeric value
 const parseFormattedNumber = (value: string): number => {
-  // Remove any non-numeric characters except the decimal point
-  // Replace comma with dot for decimal parsing
   const cleanValue = value.replace(/[^\d,.]/g, '').replace(',', '.');
   return parseFloat(cleanValue) || 0;
 };
@@ -41,31 +37,27 @@ const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) =>
   const [editingRows, setEditingRows] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
 
-  // Convert current volume to a number for comparison
   const volumeValue = currentVolume ? parseFormattedNumber(currentVolume) : 0;
 
-  // Check if a range overlaps with existing ranges
   const hasOverlap = (
     id: string, 
     minValue: number, 
     maxValue: number
   ): boolean => {
     return tableData.some(row => {
-      if (row.id === id) return false; // Skip current row
+      if (row.id === id) return false;
       
       const existingMin = parseFormattedNumber(row.exposureMin);
       const existingMax = parseFormattedNumber(row.exposureMax);
       
-      // Check for overlap
       return (
-        (minValue >= existingMin && minValue <= existingMax) || // Min value within existing range
-        (maxValue >= existingMin && maxValue <= existingMax) || // Max value within existing range
-        (minValue <= existingMin && maxValue >= existingMax)    // Existing range contained within new range
+        (minValue >= existingMin && minValue <= existingMax) ||
+        (maxValue >= existingMin && maxValue <= existingMax) ||
+        (minValue <= existingMin && maxValue >= existingMax)
       );
     });
   };
 
-  // Check if a specific row contains the current volume
   const isVolumeInRange = (row: SpreadTableRowProps): boolean => {
     if (!currentVolume) return false;
     
@@ -77,7 +69,6 @@ const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) =>
 
   const handleEdit = (id: string) => {
     if (editingRows[id]) {
-      // Save changes
       const rowToUpdate = tableData.find(row => row.id === id);
       if (rowToUpdate) {
         const min = parseFormattedNumber(rowToUpdate.exposureMin);
@@ -136,7 +127,6 @@ const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) =>
     onDataChange(newData);
   };
 
-  // Debug logging to help identify the issue
   console.log("Current volume value:", volumeValue);
   tableData.forEach(row => {
     console.log(`Row ${row.id}: Min=${parseFormattedNumber(row.exposureMin)}, Max=${parseFormattedNumber(row.exposureMax)}, IsActive=${isVolumeInRange(row)}`);
@@ -150,7 +140,6 @@ const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) =>
             <TableRow>
               <TableHead className="font-semibold">Faixa de Exposição</TableHead>
               <TableHead className="font-semibold">Spread Increase</TableHead>
-              <TableHead className="font-semibold">Total Spread</TableHead>
               <TableHead className="w-[100px]">Ações</TableHead>
             </TableRow>
           </TableHeader>
@@ -194,16 +183,6 @@ const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) =>
                       />
                     ) : (
                       row.spreadIncrease
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {editingRows[row.id] ? (
-                      <Input 
-                        value={row.totalSpread}
-                        onChange={(e) => handleChange(row.id, 'totalSpread', e.target.value)}
-                      />
-                    ) : (
-                      row.totalSpread
                     )}
                   </TableCell>
                   <TableCell>
