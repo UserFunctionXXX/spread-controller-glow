@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from "react";
 import StatCard from "@/components/StatCard";
 import ExposureCard from "@/components/ExposureCard";
@@ -15,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 
 // Mock data for our application with range exposures
 const mockTableData = [
@@ -105,7 +107,33 @@ const SpreadControlPage = () => {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 px-4 py-8 md:py-12">
       <div className="max-w-7xl mx-auto">
         <header className="mb-10 animate-fade-in">
-          <h1 className="text-3xl font-bold tracking-tight mb-1">Controle de Spreads</h1>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+            <h1 className="text-3xl font-bold tracking-tight mb-1">Controle de Spreads</h1>
+            
+            {/* Contingency Banner moved next to the title */}
+            <div className={`flex items-center space-x-3 mt-3 md:mt-0 p-2 rounded-lg ${isContingencyActive ? 'bg-amber-50' : 'bg-blue-50'}`}>
+              <span className={`p-1.5 rounded-full ${isContingencyActive ? 'text-amber-700' : 'text-blue-700'}`}>
+                {isContingencyActive ? 
+                  <AlertTriangleIcon className="h-5 w-5" /> : 
+                  <ShieldIcon className="h-5 w-5" />
+                }
+              </span>
+              <div>
+                <span className="font-medium text-sm">Modo de Contingência</span>
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs font-medium">
+                    {isContingencyActive ? 'Ativo' : 'Inativo'}
+                  </span>
+                  <Switch 
+                    checked={isContingencyActive} 
+                    onCheckedChange={handleContingencyToggle} 
+                    className={isContingencyActive ? "bg-amber-500" : ""}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          
           <p className="text-muted-foreground">Monitore e ajuste os spreads de contingência</p>
         </header>
         
@@ -125,40 +153,7 @@ const SpreadControlPage = () => {
             <ExposureCard type="SHORT" value="$ 200.773,00" />
           </div>
           
-          {/* Contingency Toggle Card */}
-          <Card className="border shadow-sm bg-white">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center justify-between text-xl font-semibold">
-                <div className="flex items-center">
-                  <span className={`mr-2 p-1.5 rounded-full ${isContingencyActive ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-blue-700'}`}>
-                    {isContingencyActive ? 
-                      <AlertTriangleIcon className="h-5 w-5" /> : 
-                      <ShieldIcon className="h-5 w-5" />
-                    }
-                  </span>
-                  Modo de Contingência
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm font-medium">
-                    {isContingencyActive ? 'Ativo' : 'Inativo'}
-                  </span>
-                  <Switch 
-                    checked={isContingencyActive} 
-                    onCheckedChange={handleContingencyToggle} 
-                    className={isContingencyActive ? "bg-amber-500" : ""}
-                  />
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                {isContingencyActive 
-                  ? "O modo de contingência está ativo. Os spreads estão ajustados conforme a tabela de contingência."
-                  : "O modo de contingência está inativo. Os spreads estão seguindo os valores padrão."
-                }
-              </p>
-            </CardContent>
-          </Card>
+          {/* Removed the Contingency Card since it's now in the header */}
           
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
