@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { 
   Table, 
@@ -132,6 +133,11 @@ const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) =>
     console.log(`Row ${row.id}: Min=${parseFormattedNumber(row.exposureMin)}, Max=${parseFormattedNumber(row.exposureMax)}, IsActive=${isVolumeInRange(row)}`);
   });
 
+  // Check if the row is the first one (0,00 to 1.000.000,00)
+  const isFirstRow = (row: SpreadTableRowProps): boolean => {
+    return row.exposureMin === "0,00" && row.exposureMax === "1.000.000,00";
+  };
+
   return (
     <div className="space-y-4">
       <div className="overflow-hidden rounded-xl border animate-fade-in shadow-sm">
@@ -146,10 +152,18 @@ const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) =>
           <TableBody>
             {tableData.map((row) => {
               const isActive = isVolumeInRange(row);
+              const isBlueHighlighted = isFirstRow(row);
+              
               return (
                 <TableRow 
                   key={row.id} 
-                  className={`transition-colors ${isActive ? "bg-green-50 border-l-4 border-l-green-500" : ""}`}
+                  className={`transition-colors ${
+                    isBlueHighlighted 
+                      ? "bg-blue-50 border-l-4 border-l-blue-500" 
+                      : isActive 
+                        ? "bg-green-50 border-l-4 border-l-green-500" 
+                        : ""
+                  }`}
                 >
                   <TableCell>
                     {editingRows[row.id] ? (
@@ -168,14 +182,19 @@ const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) =>
                       </div>
                     ) : (
                       <div className="flex items-center">
-                        <span>{row.exposureMin} a {row.exposureMax}</span>
-                        {isActive && (
+                        <span className={isBlueHighlighted ? "text-blue-700" : ""}>
+                          {row.exposureMin} a {row.exposureMax}
+                        </span>
+                        {isActive && !isBlueHighlighted && (
                           <span className="ml-2 text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">Ativo</span>
+                        )}
+                        {isBlueHighlighted && (
+                          <span className="ml-2 text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">Ativo</span>
                         )}
                       </div>
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={isBlueHighlighted ? "text-blue-700" : ""}>
                     {editingRows[row.id] ? (
                       <Input 
                         value={row.spreadIncrease}
@@ -190,6 +209,7 @@ const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) =>
                       variant="ghost" 
                       size="sm" 
                       onClick={() => handleEdit(row.id)}
+                      className={isBlueHighlighted ? "text-blue-700 hover:text-blue-800 hover:bg-blue-100" : ""}
                     >
                       {editingRows[row.id] ? "Salvar" : "Editar"}
                     </Button>
