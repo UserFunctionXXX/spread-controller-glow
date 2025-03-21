@@ -3,8 +3,19 @@ import React, { useState, useMemo } from "react";
 import StatCard from "@/components/StatCard";
 import ExposureCard from "@/components/ExposureCard";
 import SpreadTable from "@/components/SpreadTable";
-import { DollarSignIcon, ActivityIcon, TrendingUpIcon, FlagIcon } from "lucide-react";
+import { DollarSignIcon, ActivityIcon, TrendingUpIcon, AlertTriangleIcon, ShieldIcon } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 // Mock data for our application with range exposures
 const mockTableData = [
@@ -46,6 +57,9 @@ const parseFormattedNumber = (value: string): number => {
 
 const SpreadControlPage = () => {
   const [tableData, setTableData] = useState(mockTableData);
+  const [isContingencyActive, setIsContingencyActive] = useState(false);
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const { toast } = useToast();
   
   // Mock current volume value
   const currentVolume = "$ 494.223,00";
@@ -60,6 +74,33 @@ const SpreadControlPage = () => {
     // This volume falls in the first range, so we'll force it to use the first range's spread
     return "0,7 %";
   }, [tableData, currentVolumeValue]);
+
+  const handleContingencyToggle = (checked: boolean) => {
+    if (checked) {
+      // Opening confirmation dialog when toggling ON
+      setShowConfirmationDialog(true);
+    } else {
+      // Directly turning off contingency without confirmation
+      setIsContingencyActive(false);
+      toast({
+        title: "Contingência desativada",
+        description: "O modo de contingência foi desativado com sucesso.",
+      });
+    }
+  };
+
+  const confirmContingencyActivation = () => {
+    setIsContingencyActive(true);
+    setShowConfirmationDialog(false);
+    toast({
+      title: "Contingência ativada",
+      description: "O modo de contingência foi ativado com sucesso.",
+    });
+  };
+
+  const cancelContingencyActivation = () => {
+    setShowConfirmationDialog(false);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 px-4 py-8 md:py-12">
@@ -84,6 +125,41 @@ const SpreadControlPage = () => {
             <ExposureCard type="LONG" value="$ 293.450,00" />
             <ExposureCard type="SHORT" value="$ 200.773,00" />
           </div>
+          
+          {/* Contingency Toggle Card */}
+          <Card className="border shadow-sm bg-white">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center justify-between text-xl font-semibold">
+                <div className="flex items-center">
+                  <span className={`mr-2 p-1.5 rounded-full ${isContingencyActive ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-blue-700'}`}>
+                    {isContingencyActive ? 
+                      <AlertTriangleIcon className="h-5 w-5" /> : 
+                      <ShieldIcon className="h-5 w-5" />
+                    }
+                  </span>
+                  Modo de Contingência
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm font-medium">
+                    {isContingencyActive ? 'Ativo' : 'Inativo'}
+                  </span>
+                  <Switch 
+                    checked={isContingencyActive} 
+                    onCheckedChange={handleContingencyToggle} 
+                    className={isContingencyActive ? "bg-amber-500" : ""}
+                  />
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                {isContingencyActive 
+                  ? "O modo de contingência está ativo. Os spreads estão ajustados conforme a tabela de contingência."
+                  : "O modo de contingência está inativo. Os spreads estão seguindo os valores padrão."
+                }
+              </p>
+            </CardContent>
+          </Card>
           
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -126,42 +202,36 @@ const SpreadControlPage = () => {
                   </div>
                 </CardContent>
               </Card>
-              
-              {/* New Card for Spread Atual with blue background */}
-              <Card className="border shadow-sm bg-blue-50">
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center text-xl font-semibold">
-                    <div className="flex items-center">
-                      <span className="mr-2 bg-blue-100 text-blue-700 p-1.5 rounded-full">
-                        <TrendingUpIcon className="h-5 w-5" />
-                      </span>
-                      Spread Atual
-                    </div>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="p-4 rounded-lg bg-blue-100/70">
-                        <div className="text-sm text-blue-700 mb-1">BID</div>
-                        <div className="text-2xl font-bold text-blue-800">
-                          {currentSpread.replace('%', '').trim()}
-                        </div>
-                      </div>
-                      <div className="p-4 rounded-lg bg-blue-100/70">
-                        <div className="text-sm text-blue-700 mb-1">ASK</div>
-                        <div className="text-2xl font-bold text-blue-800">
-                          {currentSpread.replace('%', '').trim()}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Confirmation Dialog for Activating Contingency */}
+      <Dialog open={showConfirmationDialog} onOpenChange={setShowConfirmationDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center">
+              <AlertTriangleIcon className="h-5 w-5 text-amber-500 mr-2" />
+              Confirmar Ativação de Contingência
+            </DialogTitle>
+            <DialogDescription>
+              Você está prestes a ativar o modo de contingência. Esta ação ajustará os spreads conforme a tabela de contingência.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="p-4 bg-amber-50 rounded-md border border-amber-200 text-amber-800 text-sm mt-2">
+            <p>O modo de contingência deve ser ativado apenas em situações de risco ou volatilidade extrema do mercado.</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={cancelContingencyActivation}>
+              Cancelar
+            </Button>
+            <Button onClick={confirmContingencyActivation} className="bg-amber-500 hover:bg-amber-600">
+              Ativar Contingência
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
