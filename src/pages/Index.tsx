@@ -13,28 +13,28 @@ const mockTableData = [
     exposureMin: "0,00", 
     exposureMax: "1.000.000,00", 
     spreadIncrease: "0,2 %", 
-    totalSpread: "0,9 %" 
+    totalSpread: "0,7 %" 
   },
   { 
     id: "row-2", 
     exposureMin: "1.000.000,01", 
     exposureMax: "2.000.000,00", 
     spreadIncrease: "0,3 %", 
-    totalSpread: "1,0 %" 
+    totalSpread: "0,8 %" 
   },
   { 
     id: "row-3", 
     exposureMin: "2.000.000,01", 
     exposureMax: "3.000.000,00", 
     spreadIncrease: "0,4 %", 
-    totalSpread: "1,1 %" 
+    totalSpread: "0,9 %" 
   },
   { 
     id: "row-4", 
     exposureMin: "3.000.000,01", 
     exposureMax: "4.000.000,00", 
     spreadIncrease: "0,5 %", 
-    totalSpread: "1,2 %" 
+    totalSpread: "1,0 %" 
   },
 ];
 
@@ -58,7 +58,7 @@ const SpreadControlPage = () => {
   // Find the current active spread based on the volume
   const currentSpread = useMemo(() => {
     // This volume falls in the first range, so we'll force it to use the first range's spread
-    return "0,9 %";
+    return "0,7 %";
   }, [tableData, currentVolumeValue]);
 
   return (
