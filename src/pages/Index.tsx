@@ -1,9 +1,9 @@
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import StatCard from "@/components/StatCard";
 import ExposureCard from "@/components/ExposureCard";
 import SpreadTable from "@/components/SpreadTable";
-import { DollarSignIcon, ActivityIcon } from "lucide-react";
+import { DollarSignIcon, ActivityIcon, TrendingUpIcon } from "lucide-react";
 
 // Mock data for our application with range exposures
 const mockTableData = [
@@ -40,9 +40,29 @@ const mockTableData = [
 const SpreadControlPage = () => {
   const [tableData, setTableData] = useState(mockTableData);
   
+  // Mock current volume value
+  const currentVolume = "$ 494.223,00";
+  const currentVolumeValue = "494.223,00";
+  
   const handleTableDataChange = (newData: any[]) => {
     setTableData(newData);
   };
+
+  // Find the current active spread based on the volume
+  const currentSpread = useMemo(() => {
+    // Parse volume to number for comparison
+    const volumeNumeric = parseFloat(currentVolumeValue.replace(/[^\d,.]/g, '').replace(',', '.'));
+    
+    // Find the range that contains the current volume
+    const activeRange = tableData.find(row => {
+      const min = parseFloat(row.exposureMin.replace(/[^\d,.]/g, '').replace(',', '.'));
+      const max = parseFloat(row.exposureMax.replace(/[^\d,.]/g, '').replace(',', '.'));
+      return volumeNumeric >= min && volumeNumeric <= max;
+    });
+    
+    // Return the total spread if found, otherwise a default value
+    return activeRange ? activeRange.totalSpread : "N/A";
+  }, [tableData, currentVolumeValue]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 px-4 py-8 md:py-12">
@@ -62,11 +82,12 @@ const SpreadControlPage = () => {
             <h2 className="text-lg font-semibold mb-4">Tabela de Spreads por Faixas</h2>
             <SpreadTable 
               data={tableData} 
-              onDataChange={handleTableDataChange} 
+              onDataChange={handleTableDataChange}
+              currentVolume={currentVolumeValue}
             />
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
             <StatCard 
               title="Número de Trades" 
               value="202" 
@@ -74,8 +95,14 @@ const SpreadControlPage = () => {
             />
             <StatCard 
               title="Volume USD" 
-              value="$ 494.223,00" 
+              value={currentVolume}
               icon={<DollarSignIcon className="w-5 h-5" />}
+            />
+            <StatCard 
+              title="Spread Atual" 
+              value={currentSpread}
+              icon={<TrendingUpIcon className="w-5 h-5" />}
+              className={currentSpread !== "N/A" ? "bg-green-50" : ""}
             />
           </div>
         </div>

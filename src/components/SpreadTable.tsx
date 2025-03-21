@@ -25,6 +25,7 @@ interface SpreadTableRowProps {
 interface SpreadTableProps {
   data: SpreadTableRowProps[];
   onDataChange: (data: SpreadTableRowProps[]) => void;
+  currentVolume?: string; // Add prop for current volume
 }
 
 // Helper function to convert formatted number string to a numeric value
@@ -35,10 +36,13 @@ const parseFormattedNumber = (value: string): number => {
   return parseFloat(cleanValue) || 0;
 };
 
-const SpreadTable = ({ data, onDataChange }: SpreadTableProps) => {
+const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) => {
   const [tableData, setTableData] = useState<SpreadTableRowProps[]>(data);
   const [editingRows, setEditingRows] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
+
+  // Convert current volume to a number for comparison
+  const volumeValue = currentVolume ? parseFormattedNumber(currentVolume) : 0;
 
   // Check if a range overlaps with existing ranges
   const hasOverlap = (
@@ -59,6 +63,16 @@ const SpreadTable = ({ data, onDataChange }: SpreadTableProps) => {
         (minValue <= existingMin && maxValue >= existingMax)    // Existing range contained within new range
       );
     });
+  };
+
+  // Check if a specific row contains the current volume
+  const isVolumeInRange = (row: SpreadTableRowProps): boolean => {
+    if (!currentVolume) return false;
+    
+    const min = parseFormattedNumber(row.exposureMin);
+    const max = parseFormattedNumber(row.exposureMax);
+    
+    return volumeValue >= min && volumeValue <= max;
   };
 
   const handleEdit = (id: string) => {
@@ -135,58 +149,69 @@ const SpreadTable = ({ data, onDataChange }: SpreadTableProps) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {tableData.map((row) => (
-              <TableRow key={row.id} className="transition-colors">
-                <TableCell>
-                  {editingRows[row.id] ? (
-                    <div className="flex items-center space-x-2">
+            {tableData.map((row) => {
+              const isActive = isVolumeInRange(row);
+              return (
+                <TableRow 
+                  key={row.id} 
+                  className={`transition-colors ${isActive ? "bg-green-50 border-l-4 border-l-green-500" : ""}`}
+                >
+                  <TableCell>
+                    {editingRows[row.id] ? (
+                      <div className="flex items-center space-x-2">
+                        <Input 
+                          value={row.exposureMin}
+                          onChange={(e) => handleChange(row.id, 'exposureMin', e.target.value)}
+                          className="w-[120px]"
+                        />
+                        <span>a</span>
+                        <Input 
+                          value={row.exposureMax}
+                          onChange={(e) => handleChange(row.id, 'exposureMax', e.target.value)}
+                          className="w-[120px]"
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex items-center">
+                        <span>{row.exposureMin} a {row.exposureMax}</span>
+                        {isActive && (
+                          <span className="ml-2 text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">Ativo</span>
+                        )}
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editingRows[row.id] ? (
                       <Input 
-                        value={row.exposureMin}
-                        onChange={(e) => handleChange(row.id, 'exposureMin', e.target.value)}
-                        className="w-[120px]"
+                        value={row.spreadIncrease}
+                        onChange={(e) => handleChange(row.id, 'spreadIncrease', e.target.value)}
                       />
-                      <span>a</span>
+                    ) : (
+                      row.spreadIncrease
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editingRows[row.id] ? (
                       <Input 
-                        value={row.exposureMax}
-                        onChange={(e) => handleChange(row.id, 'exposureMax', e.target.value)}
-                        className="w-[120px]"
+                        value={row.totalSpread}
+                        onChange={(e) => handleChange(row.id, 'totalSpread', e.target.value)}
                       />
-                    </div>
-                  ) : (
-                    <span>{row.exposureMin} a {row.exposureMax}</span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {editingRows[row.id] ? (
-                    <Input 
-                      value={row.spreadIncrease}
-                      onChange={(e) => handleChange(row.id, 'spreadIncrease', e.target.value)}
-                    />
-                  ) : (
-                    row.spreadIncrease
-                  )}
-                </TableCell>
-                <TableCell>
-                  {editingRows[row.id] ? (
-                    <Input 
-                      value={row.totalSpread}
-                      onChange={(e) => handleChange(row.id, 'totalSpread', e.target.value)}
-                    />
-                  ) : (
-                    row.totalSpread
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => handleEdit(row.id)}
-                  >
-                    {editingRows[row.id] ? "Salvar" : "Editar"}
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+                    ) : (
+                      row.totalSpread
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => handleEdit(row.id)}
+                    >
+                      {editingRows[row.id] ? "Salvar" : "Editar"}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
