@@ -117,12 +117,12 @@ const SpreadControlPage = () => {
                 </CardContent>
               </Card>
               
-              {/* New Card for Spread Atual */}
-              <Card className="border shadow-sm bg-white">
+              {/* New Card for Spread Atual with blue background */}
+              <Card className="border shadow-sm bg-blue-50">
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center text-xl font-semibold">
                     <div className="flex items-center">
-                      <span className="mr-2 bg-green-50 text-green-700 p-1.5 rounded-full">
+                      <span className="mr-2 bg-blue-100 text-blue-700 p-1.5 rounded-full">
                         <TrendingUpIcon className="h-5 w-5" />
                       </span>
                       Spread Atual
@@ -132,15 +132,15 @@ const SpreadControlPage = () => {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="p-4 rounded-lg bg-gray-50">
-                        <div className="text-sm text-gray-500 mb-1">BID</div>
-                        <div className="text-2xl font-bold">
+                      <div className="p-4 rounded-lg bg-blue-100/70">
+                        <div className="text-sm text-blue-700 mb-1">BID</div>
+                        <div className="text-2xl font-bold text-blue-800">
                           {currentSpread.replace('%', '').trim()}
                         </div>
                       </div>
-                      <div className="p-4 rounded-lg bg-gray-50">
-                        <div className="text-sm text-gray-500 mb-1">ASK</div>
-                        <div className="text-2xl font-bold">
+                      <div className="p-4 rounded-lg bg-blue-100/70">
+                        <div className="text-sm text-blue-700 mb-1">ASK</div>
+                        <div className="text-2xl font-bold text-blue-800">
                           {currentSpread.replace('%', '').trim()}
                         </div>
                       </div>
