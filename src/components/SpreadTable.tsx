@@ -136,6 +136,12 @@ const SpreadTable = ({ data, onDataChange, currentVolume }: SpreadTableProps) =>
     onDataChange(newData);
   };
 
+  // Debug logging to help identify the issue
+  console.log("Current volume value:", volumeValue);
+  tableData.forEach(row => {
+    console.log(`Row ${row.id}: Min=${parseFormattedNumber(row.exposureMin)}, Max=${parseFormattedNumber(row.exposureMax)}, IsActive=${isVolumeInRange(row)}`);
+  });
+
   return (
     <div className="space-y-4">
       <div className="overflow-hidden rounded-xl border animate-fade-in shadow-sm">

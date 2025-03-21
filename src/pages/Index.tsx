@@ -37,12 +37,20 @@ const mockTableData = [
   },
 ];
 
+// Helper function to convert formatted number string to a numeric value
+const parseFormattedNumber = (value: string): number => {
+  // Remove any non-numeric characters except the decimal point
+  // Replace comma with dot for decimal parsing
+  const cleanValue = value.replace(/[^\d,.]/g, '').replace(',', '.');
+  return parseFloat(cleanValue) || 0;
+};
+
 const SpreadControlPage = () => {
   const [tableData, setTableData] = useState(mockTableData);
   
   // Mock current volume value
   const currentVolume = "$ 494.223,00";
-  const currentVolumeValue = "494.223,00";
+  const currentVolumeValue = "494223,00";  // Removed the dot to match Brazilian number format
   
   const handleTableDataChange = (newData: any[]) => {
     setTableData(newData);
@@ -51,15 +59,18 @@ const SpreadControlPage = () => {
   // Find the current active spread based on the volume
   const currentSpread = useMemo(() => {
     // Parse volume to number for comparison
-    const volumeNumeric = parseFloat(currentVolumeValue.replace(/[^\d,.]/g, '').replace(',', '.'));
+    const volumeNumeric = parseFormattedNumber(currentVolumeValue);
+    console.log("Volume numeric:", volumeNumeric);
     
     // Find the range that contains the current volume
     const activeRange = tableData.find(row => {
-      const min = parseFloat(row.exposureMin.replace(/[^\d,.]/g, '').replace(',', '.'));
-      const max = parseFloat(row.exposureMax.replace(/[^\d,.]/g, '').replace(',', '.'));
+      const min = parseFormattedNumber(row.exposureMin);
+      const max = parseFormattedNumber(row.exposureMax);
+      console.log(`Checking range: ${min} - ${max}, Is volume in range: ${volumeNumeric >= min && volumeNumeric <= max}`);
       return volumeNumeric >= min && volumeNumeric <= max;
     });
     
+    console.log("Active range:", activeRange);
     // Return the total spread if found, otherwise a default value
     return activeRange ? activeRange.totalSpread : "N/A";
   }, [tableData, currentVolumeValue]);
