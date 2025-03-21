@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import StatCard from "@/components/StatCard";
 import ExposureCard from "@/components/ExposureCard";
@@ -172,6 +171,31 @@ const SpreadControlPage = () => {
             </div>
             
             <div className="space-y-6">
+              {/* Spread Atual Card */}
+              <Card className="border shadow-sm bg-white">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center text-xl font-semibold">
+                    <div className="flex items-center">
+                      <span className="mr-2 bg-blue-50 text-blue-700 p-1.5 rounded-full">
+                        <TrendingUpIcon className="h-5 w-5" />
+                      </span>
+                      Spread Atual
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center p-4">
+                    <div className="text-3xl font-bold text-blue-700">
+                      {currentSpread}
+                    </div>
+                    <div className="text-sm text-muted-foreground mt-1">
+                      Baseado no volume atual
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Spread Base Card */}
               <Card className="border shadow-sm bg-white">
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center text-xl font-semibold">
