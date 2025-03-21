@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import StatCard from "@/components/StatCard";
 import ExposureCard from "@/components/ExposureCard";
@@ -102,15 +101,13 @@ const SpreadControlPage = () => {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="p-4 rounded-lg bg-gray-50">
                         <div className="text-sm text-gray-500 mb-1">BID</div>
-                        <div className="text-2xl font-bold flex items-center">
-                          <DollarSignIcon className="h-5 w-5 text-green-600 mr-1" />
+                        <div className="text-2xl font-bold">
                           0.5
                         </div>
                       </div>
                       <div className="p-4 rounded-lg bg-gray-50">
                         <div className="text-sm text-gray-500 mb-1">ASK</div>
-                        <div className="text-2xl font-bold flex items-center">
-                          <DollarSignIcon className="h-5 w-5 text-red-600 mr-1" />
+                        <div className="text-2xl font-bold">
                           0.5
                         </div>
                       </div>
