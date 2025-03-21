@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import StatCard from "@/components/StatCard";
 import ExposureCard from "@/components/ExposureCard";
 import SpreadTable from "@/components/SpreadTable";
-import SpreadSelector from "@/components/SpreadSelector";
 import { DollarSignIcon, ActivityIcon } from "lucide-react";
 
 // Mock data for our application with range exposures
@@ -39,13 +38,8 @@ const mockTableData = [
 ];
 
 const SpreadControlPage = () => {
-  const [currentSpread, setCurrentSpread] = useState(0.7);
   const [tableData, setTableData] = useState(mockTableData);
   
-  const handleSpreadChange = (newSpread: number) => {
-    setCurrentSpread(newSpread);
-  };
-
   const handleTableDataChange = (newData: any[]) => {
     setTableData(newData);
   };
@@ -83,13 +77,6 @@ const SpreadControlPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
             <ExposureCard type="LONG" value="$ 293.450,00" />
             <ExposureCard type="SHORT" value="$ 200.773,00" />
-          </div>
-          
-          <div className="mt-8 max-w-xs">
-            <SpreadSelector 
-              currentSpread={currentSpread} 
-              onSpreadChange={handleSpreadChange} 
-            />
           </div>
         </div>
       </div>
