@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import StatCard from "@/components/StatCard";
 import ExposureCard from "@/components/ExposureCard";
@@ -18,7 +17,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 
-// Mock data for our application with range exposures
 const mockTableData = [
   { 
     id: "row-1", 
@@ -50,7 +48,6 @@ const mockTableData = [
   },
 ];
 
-// Helper function to convert formatted number string to a numeric value
 const parseFormattedNumber = (value: string): number => {
   const cleanValue = value.replace(/[^\d,.]/g, '').replace(',', '.');
   return parseFloat(cleanValue) || 0;
@@ -62,38 +59,37 @@ const SpreadControlPage = () => {
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const { toast } = useToast();
   
-  // Mock values for LONG and SHORT exposures
   const longExposureValue = "$ 293.450,00";
   const shortExposureValue = "$ 200.773,00";
   
-  // Calculate NET USD (LONG - SHORT)
   const calculateNetUsd = () => {
     const longValue = parseFormattedNumber(longExposureValue.replace("$ ", ""));
     const shortValue = parseFormattedNumber(shortExposureValue.replace("$ ", ""));
     const netValue = longValue - shortValue;
     return `$ ${netValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace('.', ',')}`;
   };
-  
-  // Mock current volume value
+
+  const isNetPositive = () => {
+    const longValue = parseFormattedNumber(longExposureValue.replace("$ ", ""));
+    const shortValue = parseFormattedNumber(shortExposureValue.replace("$ ", ""));
+    return longValue >= shortValue;
+  };
+
   const currentVolume = "$ 494.223,00";
-  const currentVolumeValue = "494223,00";  // Removed the dot to match Brazilian number format
-  
+  const currentVolumeValue = "494223,00";
+
   const handleTableDataChange = (newData: any[]) => {
     setTableData(newData);
   };
 
-  // Find the current active spread based on the volume
   const currentSpread = useMemo(() => {
-    // This volume falls in the first range, so we'll force it to use the first range's spread
     return "0,7 %";
   }, [tableData, currentVolumeValue]);
 
   const handleContingencyToggle = (checked: boolean) => {
     if (checked) {
-      // Opening confirmation dialog when toggling ON
       setShowConfirmationDialog(true);
     } else {
-      // Directly turning off contingency without confirmation
       setIsContingencyActive(false);
       toast({
         title: "Contingência desativada",
@@ -122,7 +118,6 @@ const SpreadControlPage = () => {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
             <h1 className="text-3xl font-bold tracking-tight mb-1">Controle de Spreads</h1>
             
-            {/* Contingency Banner moved next to the title */}
             <div className={`flex items-center space-x-3 mt-3 md:mt-0 p-2 rounded-lg ${isContingencyActive ? 'bg-amber-50' : 'bg-blue-50'}`}>
               <span className={`p-1.5 rounded-full ${isContingencyActive ? 'text-amber-700' : 'text-blue-700'}`}>
                 {isContingencyActive ? 
@@ -156,16 +151,15 @@ const SpreadControlPage = () => {
               value="202" 
               icon={<ActivityIcon className="w-5 h-5" />}
             />
+            <ExposureCard type="LONG" value={longExposureValue} />
+            <ExposureCard type="SHORT" value={shortExposureValue} />
             <StatCard 
               title="NET USD" 
               value={calculateNetUsd()}
               icon={<DollarSignIcon className="w-5 h-5" />}
+              className={isNetPositive() ? "bg-success/10 border-success/20" : "bg-danger/10 border-danger/20"}
             />
-            <ExposureCard type="LONG" value={longExposureValue} />
-            <ExposureCard type="SHORT" value={shortExposureValue} />
           </div>
-          
-          {/* Removed the Contingency Card since it's now in the header */}
           
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -179,7 +173,6 @@ const SpreadControlPage = () => {
             </div>
             
             <div className="space-y-6">
-              {/* Spread Atual Card */}
               <Card className="border shadow-sm bg-white">
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center text-xl font-semibold">
@@ -203,7 +196,6 @@ const SpreadControlPage = () => {
                 </CardContent>
               </Card>
               
-              {/* Spread Base Card */}
               <Card className="border shadow-sm bg-white">
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center text-xl font-semibold">
@@ -239,7 +231,6 @@ const SpreadControlPage = () => {
         </div>
       </div>
 
-      {/* Confirmation Dialog for Activating Contingency */}
       <Dialog open={showConfirmationDialog} onOpenChange={setShowConfirmationDialog}>
         <DialogContent>
           <DialogHeader>
