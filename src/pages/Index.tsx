@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import StatCard from "@/components/StatCard";
 import ExposureCard from "@/components/ExposureCard";
 import SpreadTable from "@/components/SpreadTable";
-import { DollarSignIcon, ActivityIcon, TrendingUpIcon, AlertTriangleIcon, ShieldIcon } from "lucide-react";
+import { DollarSignIcon, ActivityIcon, TrendingUpIcon, AlertTriangleIcon, ShieldIcon, ArrowUpIcon, ArrowDownIcon } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -111,6 +111,12 @@ const SpreadControlPage = () => {
     setShowConfirmationDialog(false);
   };
 
+  const getNetUsdIcon = () => {
+    return isNetPositive() ? 
+      <ArrowUpIcon className="w-5 h-5" /> : 
+      <ArrowDownIcon className="w-5 h-5" />;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 px-4 py-8 md:py-12">
       <div className="max-w-7xl mx-auto">
@@ -156,7 +162,7 @@ const SpreadControlPage = () => {
             <StatCard 
               title="NET USD" 
               value={calculateNetUsd()}
-              icon={<DollarSignIcon className="w-5 h-5" />}
+              icon={getNetUsdIcon()}
               className={isNetPositive() ? "bg-success/10 border-success/20" : "bg-danger/10 border-danger/20"}
             />
           </div>
