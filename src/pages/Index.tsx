@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from "react";
 import StatCard from "@/components/StatCard";
 import ExposureCard from "@/components/ExposureCard";
@@ -60,6 +61,18 @@ const SpreadControlPage = () => {
   const [isContingencyActive, setIsContingencyActive] = useState(false);
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const { toast } = useToast();
+  
+  // Mock values for LONG and SHORT exposures
+  const longExposureValue = "$ 293.450,00";
+  const shortExposureValue = "$ 200.773,00";
+  
+  // Calculate NET USD (LONG - SHORT)
+  const calculateNetUsd = () => {
+    const longValue = parseFormattedNumber(longExposureValue.replace("$ ", ""));
+    const shortValue = parseFormattedNumber(shortExposureValue.replace("$ ", ""));
+    const netValue = longValue - shortValue;
+    return `$ ${netValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace('.', ',')}`;
+  };
   
   // Mock current volume value
   const currentVolume = "$ 494.223,00";
@@ -144,12 +157,12 @@ const SpreadControlPage = () => {
               icon={<ActivityIcon className="w-5 h-5" />}
             />
             <StatCard 
-              title="Volume USD" 
-              value={currentVolume}
+              title="NET USD" 
+              value={calculateNetUsd()}
               icon={<DollarSignIcon className="w-5 h-5" />}
             />
-            <ExposureCard type="LONG" value="$ 293.450,00" />
-            <ExposureCard type="SHORT" value="$ 200.773,00" />
+            <ExposureCard type="LONG" value={longExposureValue} />
+            <ExposureCard type="SHORT" value={shortExposureValue} />
           </div>
           
           {/* Removed the Contingency Card since it's now in the header */}
