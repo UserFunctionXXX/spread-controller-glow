@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from "react";
 import StatCard from "@/components/StatCard";
 import ExposureCard from "@/components/ExposureCard";
@@ -179,24 +180,43 @@ const SpreadControlPage = () => {
             </div>
             
             <div className="space-y-6">
-              <Card className="border shadow-sm bg-white">
+              <Card className={`border shadow-sm transition-all duration-300 ${
+                isContingencyActive 
+                  ? "bg-white" 
+                  : "bg-gray-50 opacity-60 pointer-events-none"
+              }`}>
                 <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center text-xl font-semibold">
+                  <CardTitle className={`flex items-center text-xl font-semibold ${
+                    isContingencyActive ? "" : "text-gray-400"
+                  }`}>
                     <div className="flex items-center">
-                      <span className="mr-2 bg-blue-50 text-blue-700 p-1.5 rounded-full">
+                      <span className={`mr-2 p-1.5 rounded-full ${
+                        isContingencyActive 
+                          ? "bg-blue-50 text-blue-700" 
+                          : "bg-gray-100 text-gray-400"
+                      }`}>
                         <TrendingUpIcon className="h-5 w-5" />
                       </span>
                       Spread Atual
+                      {!isContingencyActive && (
+                        <span className="ml-2 text-xs px-2 py-1 bg-gray-200 text-gray-500 rounded-full">
+                          Desabilitado
+                        </span>
+                      )}
                     </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-center p-4">
-                    <div className="text-3xl font-bold text-blue-700">
+                    <div className={`text-3xl font-bold ${
+                      isContingencyActive ? "text-blue-700" : "text-gray-400"
+                    }`}>
                       {currentSpread}
                     </div>
-                    <div className="text-sm text-muted-foreground mt-1">
-                      Baseado no volume atual
+                    <div className={`text-sm mt-1 ${
+                      isContingencyActive ? "text-muted-foreground" : "text-gray-400"
+                    }`}>
+                      {isContingencyActive ? "Baseado no volume atual" : "Modo contingência inativo"}
                     </div>
                   </div>
                 </CardContent>
