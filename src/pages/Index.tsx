@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from "react";
 import StatCard from "@/components/StatCard";
 import ExposureCard from "@/components/ExposureCard";
@@ -56,6 +57,7 @@ const parseFormattedNumber = (value: string): number => {
 const SpreadControlPage = () => {
   const [tableData, setTableData] = useState(mockTableData);
   const [isContingencyActive, setIsContingencyActive] = useState(false);
+  const [contingencyActivatedAt, setContingencyActivatedAt] = useState<Date | null>(null);
   const [showActivationDialog, setShowActivationDialog] = useState(false);
   const [showDeactivationDialog, setShowDeactivationDialog] = useState(false);
   const { toast } = useToast();
@@ -97,6 +99,7 @@ const SpreadControlPage = () => {
 
   const confirmContingencyActivation = () => {
     setIsContingencyActive(true);
+    setContingencyActivatedAt(new Date());
     setShowActivationDialog(false);
     toast({
       title: "Contingência ativada",
@@ -110,6 +113,7 @@ const SpreadControlPage = () => {
 
   const confirmContingencyDeactivation = () => {
     setIsContingencyActive(false);
+    setContingencyActivatedAt(null);
     setShowDeactivationDialog(false);
     toast({
       title: "Contingência desativada",
@@ -125,6 +129,17 @@ const SpreadControlPage = () => {
     return isNetPositive() ? 
       <ArrowUpIcon className="w-5 h-5" /> : 
       <ArrowDownIcon className="w-5 h-5" />;
+  };
+
+  const formatActivationDateTime = (date: Date) => {
+    return date.toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
   };
 
   return (
@@ -153,6 +168,11 @@ const SpreadControlPage = () => {
                     className={isContingencyActive ? "bg-amber-500" : ""}
                   />
                 </div>
+                {isContingencyActive && contingencyActivatedAt && (
+                  <div className="text-xs text-amber-600 mt-1">
+                    Ativado em: {formatActivationDateTime(contingencyActivatedAt)}
+                  </div>
+                )}
               </div>
             </div>
           </div>
