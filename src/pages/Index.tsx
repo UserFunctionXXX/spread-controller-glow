@@ -142,7 +142,7 @@ const SpreadControlPage = () => {
   };
 
   return (
-    <div className="dark min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 px-4 py-8 md:py-12 text-white">
+    <div className="dark min-h-screen px-4 py-8 md:py-12 text-white" style={{ backgroundColor: '#101010' }}>
       <div className="max-w-7xl mx-auto">
         <header className="mb-10 animate-fade-in">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
