@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import StatCard from "@/components/StatCard";
 import ExposureCard from "@/components/ExposureCard";
@@ -143,33 +142,33 @@ const SpreadControlPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 px-4 py-8 md:py-12">
+    <div className="dark min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 px-4 py-8 md:py-12 text-white">
       <div className="max-w-7xl mx-auto">
         <header className="mb-10 animate-fade-in">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-            <h1 className="text-3xl font-bold tracking-tight mb-1">Controle de Spreads</h1>
+            <h1 className="text-3xl font-bold tracking-tight mb-1 text-white">Controle de Spreads</h1>
             
-            <div className={`flex items-center space-x-3 mt-3 md:mt-0 p-2 rounded-lg ${isContingencyActive ? 'bg-amber-50' : 'bg-blue-50'}`}>
-              <span className={`p-1.5 rounded-full ${isContingencyActive ? 'text-amber-700' : 'text-blue-700'}`}>
+            <div className={`flex items-center space-x-3 mt-3 md:mt-0 p-2 rounded-lg ${isContingencyActive ? 'bg-amber-900/30 border border-amber-700/50' : 'bg-blue-900/30 border border-blue-700/50'}`}>
+              <span className={`p-1.5 rounded-full ${isContingencyActive ? 'text-amber-400' : 'text-blue-400'}`}>
                 {isContingencyActive ? 
                   <AlertTriangleIcon className="h-5 w-5" /> : 
                   <ShieldIcon className="h-5 w-5" />
                 }
               </span>
               <div>
-                <span className="font-medium text-sm">Modo de Contingência</span>
+                <span className="font-medium text-sm text-gray-200">Modo de Contingência</span>
                 <div className="flex items-center space-x-2">
-                  <span className="text-xs font-medium">
+                  <span className="text-xs font-medium text-gray-300">
                     {isContingencyActive ? 'Ativo' : 'Inativo'}
                   </span>
                   <Switch 
                     checked={isContingencyActive} 
                     onCheckedChange={handleContingencyToggle} 
-                    className={isContingencyActive ? "bg-amber-500" : ""}
+                    className={isContingencyActive ? "bg-amber-600" : ""}
                   />
                 </div>
                 {isContingencyActive && contingencyActivatedAt && (
-                  <div className="text-xs text-amber-600 mt-1">
+                  <div className="text-xs text-amber-400 mt-1">
                     Ativado em: {formatActivationDateTime(contingencyActivatedAt)}
                   </div>
                 )}
@@ -177,7 +176,7 @@ const SpreadControlPage = () => {
             </div>
           </div>
           
-          <p className="text-muted-foreground">Monitore e ajuste os spreads de contingência</p>
+          <p className="text-gray-400">Monitore e ajuste os spreads de contingência</p>
         </header>
         
         <div className="grid gap-6 mb-8">
@@ -193,13 +192,13 @@ const SpreadControlPage = () => {
               title="NET USD" 
               value={calculateNetUsd()}
               icon={getNetUsdIcon()}
-              className={isNetPositive() ? "bg-success/10 border-success/20" : "bg-danger/10 border-danger/20"}
+              className={isNetPositive() ? "bg-success/20 border-success/30" : "bg-danger/20 border-danger/30"}
             />
           </div>
           
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h2 className="text-lg font-semibold mb-4">Tabela de Spreads por Faixas</h2>
+              <h2 className="text-lg font-semibold mb-4 text-white">Tabela de Spreads por Faixas</h2>
               <SpreadTable 
                 data={tableData} 
                 onDataChange={handleTableDataChange}
@@ -209,26 +208,26 @@ const SpreadControlPage = () => {
             </div>
             
             <div className="space-y-6">
-              <Card className={`border shadow-sm transition-all duration-300 ${
+              <Card className={`border border-gray-700 bg-gray-800/50 shadow-sm transition-all duration-300 ${
                 isContingencyActive 
-                  ? "bg-white" 
-                  : "bg-gray-50 opacity-60 pointer-events-none"
+                  ? "bg-gray-800/50" 
+                  : "bg-gray-800/20 opacity-60 pointer-events-none"
               }`}>
                 <CardHeader className="pb-2">
                   <CardTitle className={`flex items-center text-xl font-semibold ${
-                    isContingencyActive ? "" : "text-gray-400"
+                    isContingencyActive ? "text-white" : "text-gray-500"
                   }`}>
                     <div className="flex items-center">
                       <span className={`mr-2 p-1.5 rounded-full ${
                         isContingencyActive 
-                          ? "bg-blue-50 text-blue-700" 
-                          : "bg-gray-100 text-gray-400"
+                          ? "bg-blue-900/50 text-blue-400" 
+                          : "bg-gray-700/50 text-gray-500"
                       }`}>
                         <TrendingUpIcon className="h-5 w-5" />
                       </span>
                       Spread Atual
                       {!isContingencyActive && (
-                        <span className="ml-2 text-xs px-2 py-1 bg-gray-200 text-gray-500 rounded-full">
+                        <span className="ml-2 text-xs px-2 py-1 bg-gray-700 text-gray-400 rounded-full">
                           Desabilitado
                         </span>
                       )}
@@ -238,12 +237,12 @@ const SpreadControlPage = () => {
                 <CardContent>
                   <div className="text-center p-4">
                     <div className={`text-3xl font-bold ${
-                      isContingencyActive ? "text-blue-700" : "text-gray-400"
+                      isContingencyActive ? "text-blue-400" : "text-gray-500"
                     }`}>
                       {currentSpread}
                     </div>
                     <div className={`text-sm mt-1 ${
-                      isContingencyActive ? "text-muted-foreground" : "text-gray-400"
+                      isContingencyActive ? "text-gray-400" : "text-gray-500"
                     }`}>
                       {isContingencyActive ? "Baseado no volume atual" : "Modo contingência inativo"}
                     </div>
@@ -251,11 +250,11 @@ const SpreadControlPage = () => {
                 </CardContent>
               </Card>
               
-              <Card className="border shadow-sm bg-white">
+              <Card className="border border-gray-700 bg-gray-800/50 shadow-sm">
                 <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center text-xl font-semibold">
+                  <CardTitle className="flex items-center text-xl font-semibold text-white">
                     <div className="flex items-center">
-                      <span className="mr-2 bg-blue-50 text-blue-700 p-1.5 rounded-full">
+                      <span className="mr-2 bg-blue-900/50 text-blue-400 p-1.5 rounded-full">
                         <DollarSignIcon className="h-5 w-5" />
                       </span>
                       Spread de Contingência Base
@@ -265,15 +264,15 @@ const SpreadControlPage = () => {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="p-4 rounded-lg bg-gray-50">
-                        <div className="text-sm text-gray-500 mb-1">BID</div>
-                        <div className="text-2xl font-bold">
+                      <div className="p-4 rounded-lg bg-gray-700/50">
+                        <div className="text-sm text-gray-400 mb-1">BID</div>
+                        <div className="text-2xl font-bold text-white">
                           0.5
                         </div>
                       </div>
-                      <div className="p-4 rounded-lg bg-gray-50">
-                        <div className="text-sm text-gray-500 mb-1">ASK</div>
-                        <div className="text-2xl font-bold">
+                      <div className="p-4 rounded-lg bg-gray-700/50">
+                        <div className="text-sm text-gray-400 mb-1">ASK</div>
+                        <div className="text-2xl font-bold text-white">
                           0.5
                         </div>
                       </div>
@@ -288,24 +287,24 @@ const SpreadControlPage = () => {
 
       {/* Modal de confirmação para ativação */}
       <Dialog open={showActivationDialog} onOpenChange={setShowActivationDialog}>
-        <DialogContent>
+        <DialogContent className="bg-gray-800 border-gray-700 text-white">
           <DialogHeader>
-            <DialogTitle className="flex items-center">
-              <AlertTriangleIcon className="h-5 w-5 text-amber-500 mr-2" />
+            <DialogTitle className="flex items-center text-white">
+              <AlertTriangleIcon className="h-5 w-5 text-amber-400 mr-2" />
               Confirmar Ativação de Contingência
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-gray-300">
               Você está prestes a ativar o modo de contingência. Esta ação ajustará os spreads conforme a tabela de contingência.
             </DialogDescription>
           </DialogHeader>
-          <div className="p-4 bg-amber-50 rounded-md border border-amber-200 text-amber-800 text-sm mt-2">
+          <div className="p-4 bg-amber-900/30 rounded-md border border-amber-700/50 text-amber-200 text-sm mt-2">
             <p>O modo de contingência deve ser ativado apenas em situações de risco ou volatilidade extrema do mercado.</p>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={cancelContingencyActivation}>
+            <Button variant="outline" onClick={cancelContingencyActivation} className="border-gray-600 text-gray-300 hover:bg-gray-700">
               Cancelar
             </Button>
-            <Button onClick={confirmContingencyActivation} className="bg-amber-500 hover:bg-amber-600">
+            <Button onClick={confirmContingencyActivation} className="bg-amber-600 hover:bg-amber-700">
               Ativar Contingência
             </Button>
           </DialogFooter>
@@ -314,24 +313,24 @@ const SpreadControlPage = () => {
 
       {/* Modal de confirmação para desativação */}
       <Dialog open={showDeactivationDialog} onOpenChange={setShowDeactivationDialog}>
-        <DialogContent>
+        <DialogContent className="bg-gray-800 border-gray-700 text-white">
           <DialogHeader>
-            <DialogTitle className="flex items-center">
-              <ShieldIcon className="h-5 w-5 text-blue-500 mr-2" />
+            <DialogTitle className="flex items-center text-white">
+              <ShieldIcon className="h-5 w-5 text-blue-400 mr-2" />
               Confirmar Desativação de Contingência
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-gray-300">
               Você está prestes a desativar o modo de contingência. Os spreads voltarão aos valores normais.
             </DialogDescription>
           </DialogHeader>
-          <div className="p-4 bg-blue-50 rounded-md border border-blue-200 text-blue-800 text-sm mt-2">
+          <div className="p-4 bg-blue-900/30 rounded-md border border-blue-700/50 text-blue-200 text-sm mt-2">
             <p>Ao desativar o modo de contingência, o sistema retornará aos spreads padrão de operação.</p>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={cancelContingencyDeactivation}>
+            <Button variant="outline" onClick={cancelContingencyDeactivation} className="border-gray-600 text-gray-300 hover:bg-gray-700">
               Cancelar
             </Button>
-            <Button onClick={confirmContingencyDeactivation} className="bg-blue-500 hover:bg-blue-600">
+            <Button onClick={confirmContingencyDeactivation} className="bg-blue-600 hover:bg-blue-700">
               Desativar Contingência
             </Button>
           </DialogFooter>
