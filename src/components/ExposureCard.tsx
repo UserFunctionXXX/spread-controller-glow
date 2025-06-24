@@ -15,9 +15,10 @@ const ExposureCard = ({ type, value, className }: ExposureCardProps) => {
   return (
     <div
       className={cn(
-        "p-5 rounded-xl shadow-sm animate-slide-in transition-all duration-300 hover:shadow-md glass",
+        "p-5 rounded-xl shadow-sm animate-slide-in transition-all duration-300 hover:shadow-md border border-gray-700",
         className
       )}
+      style={{ backgroundColor: '#1B1E20' }}
     >
       <div className="flex items-center space-x-3">
         <div className={cn(
@@ -29,8 +30,8 @@ const ExposureCard = ({ type, value, className }: ExposureCardProps) => {
           }
         </div>
         <div>
-          <h3 className="text-sm font-medium text-gray-500">Exposição {type}</h3>
-          <p className="text-2xl font-bold">{value}</p>
+          <h3 className="text-sm font-medium text-gray-400">Exposição {type}</h3>
+          <p className="text-2xl font-bold text-white">{value}</p>
         </div>
       </div>
     </div>
