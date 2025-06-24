@@ -250,7 +250,7 @@ const SpreadControlPage = () => {
                 </CardContent>
               </Card>
               
-              <Card className="border border-gray-700 bg-gray-800/50 shadow-sm">
+              <Card className="border border-gray-700 shadow-sm" style={{ backgroundColor: '#1B1E20' }}>
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center text-xl font-semibold text-white">
                     <div className="flex items-center">
