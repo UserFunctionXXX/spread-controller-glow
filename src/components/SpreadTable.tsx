@@ -173,7 +173,7 @@ const SpreadTable = ({
                         : ""
                   }`}
                   style={{
-                    backgroundColor: isActive ? '#87BAFF' : (isBlueHighlighted ? '#EFF6FF' : ''),
+                    backgroundColor: isActive ? '#4C535D' : (isBlueHighlighted ? '#EFF6FF' : ''),
                   }}
                 >
                   <TableCell>
@@ -223,7 +223,7 @@ const SpreadTable = ({
                         onClick={() => handleEdit(row.id)}
                         className={
                           isActive 
-                            ? "text-white hover:text-gray-200 hover:bg-blue-500/20" 
+                            ? "text-white hover:text-gray-200 hover:bg-gray-500/20" 
                             : isBlueHighlighted 
                               ? "text-blue-700 hover:text-blue-800 hover:bg-blue-100" 
                               : ""
