@@ -30,7 +30,8 @@ interface SpreadTableProps {
 }
 
 const parseFormattedNumber = (value: string): number => {
-  const cleanValue = value.replace(/[^\d,.]/g, '').replace(',', '.');
+  // Remove currency symbols, spaces and convert commas to dots for decimal
+  const cleanValue = value.replace(/[$\s]/g, '').replace(/\./g, '').replace(',', '.');
   return parseFloat(cleanValue) || 0;
 };
 
@@ -159,16 +160,16 @@ const SpreadTable = ({
           <TableBody>
             {tableData.map((row) => {
               const isActive = isVolumeInRange(row);
-              const isBlueHighlighted = isFirstRow(row);
+              const isBlueHighlighted = isFirstRow(row) && !isActive;
               
               return (
                 <TableRow 
                   key={row.id} 
                   className={`transition-colors ${
-                    isBlueHighlighted 
-                      ? "border-l-4 border-l-blue-500" 
-                      : isActive 
-                        ? "border-l-4 border-l-green-500" 
+                    isActive 
+                      ? "border-l-4 border-l-green-500" 
+                      : isBlueHighlighted 
+                        ? "border-l-4 border-l-blue-500" 
                         : ""
                   }`}
                   style={{
@@ -198,7 +199,7 @@ const SpreadTable = ({
                         {isActive && (
                           <span className="ml-2 text-xs px-2 py-1 bg-white text-blue-600 rounded-full font-medium">Ativo</span>
                         )}
-                        {isBlueHighlighted && !isActive && (
+                        {isBlueHighlighted && (
                           <span className="ml-2 text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">Ativo</span>
                         )}
                       </div>
