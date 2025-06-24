@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import StatCard from "@/components/StatCard";
 import ExposureCard from "@/components/ExposureCard";
@@ -57,7 +56,8 @@ const parseFormattedNumber = (value: string): number => {
 const SpreadControlPage = () => {
   const [tableData, setTableData] = useState(mockTableData);
   const [isContingencyActive, setIsContingencyActive] = useState(false);
-  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [showActivationDialog, setShowActivationDialog] = useState(false);
+  const [showDeactivationDialog, setShowDeactivationDialog] = useState(false);
   const { toast } = useToast();
   
   const longExposureValue = "$ 293.450,00";
@@ -89,19 +89,15 @@ const SpreadControlPage = () => {
 
   const handleContingencyToggle = (checked: boolean) => {
     if (checked) {
-      setShowConfirmationDialog(true);
+      setShowActivationDialog(true);
     } else {
-      setIsContingencyActive(false);
-      toast({
-        title: "Contingência desativada",
-        description: "O modo de contingência foi desativado com sucesso.",
-      });
+      setShowDeactivationDialog(true);
     }
   };
 
   const confirmContingencyActivation = () => {
     setIsContingencyActive(true);
-    setShowConfirmationDialog(false);
+    setShowActivationDialog(false);
     toast({
       title: "Contingência ativada",
       description: "O modo de contingência foi ativado com sucesso.",
@@ -109,7 +105,20 @@ const SpreadControlPage = () => {
   };
 
   const cancelContingencyActivation = () => {
-    setShowConfirmationDialog(false);
+    setShowActivationDialog(false);
+  };
+
+  const confirmContingencyDeactivation = () => {
+    setIsContingencyActive(false);
+    setShowDeactivationDialog(false);
+    toast({
+      title: "Contingência desativada",
+      description: "O modo de contingência foi desativado com sucesso.",
+    });
+  };
+
+  const cancelContingencyDeactivation = () => {
+    setShowDeactivationDialog(false);
   };
 
   const getNetUsdIcon = () => {
@@ -257,7 +266,8 @@ const SpreadControlPage = () => {
         </div>
       </div>
 
-      <Dialog open={showConfirmationDialog} onOpenChange={setShowConfirmationDialog}>
+      {/* Modal de confirmação para ativação */}
+      <Dialog open={showActivationDialog} onOpenChange={setShowActivationDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center">
@@ -277,6 +287,32 @@ const SpreadControlPage = () => {
             </Button>
             <Button onClick={confirmContingencyActivation} className="bg-amber-500 hover:bg-amber-600">
               Ativar Contingência
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de confirmação para desativação */}
+      <Dialog open={showDeactivationDialog} onOpenChange={setShowDeactivationDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center">
+              <ShieldIcon className="h-5 w-5 text-blue-500 mr-2" />
+              Confirmar Desativação de Contingência
+            </DialogTitle>
+            <DialogDescription>
+              Você está prestes a desativar o modo de contingência. Os spreads voltarão aos valores normais.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="p-4 bg-blue-50 rounded-md border border-blue-200 text-blue-800 text-sm mt-2">
+            <p>Ao desativar o modo de contingência, o sistema retornará aos spreads padrão de operação.</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={cancelContingencyDeactivation}>
+              Cancelar
+            </Button>
+            <Button onClick={confirmContingencyDeactivation} className="bg-blue-500 hover:bg-blue-600">
+              Desativar Contingência
             </Button>
           </DialogFooter>
         </DialogContent>
