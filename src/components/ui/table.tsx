@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -58,9 +59,18 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+      "border-b transition-colors data-[state=selected]:bg-muted",
       className
     )}
+    style={{
+      '--hover-bg': '#4C535D'
+    } as React.CSSProperties}
+    onMouseEnter={(e) => {
+      (e.currentTarget as HTMLElement).style.backgroundColor = '#4C535D';
+    }}
+    onMouseLeave={(e) => {
+      (e.currentTarget as HTMLElement).style.backgroundColor = '';
+    }}
     {...props}
   />
 ))
