@@ -26,7 +26,7 @@ interface SpreadTableProps {
   data: SpreadTableRowProps[];
   onDataChange: (data: SpreadTableRowProps[]) => void;
   currentVolume?: string;
-  isContingencyActive?: boolean; // New prop for contingency state
+  isContingencyActive?: boolean;
 }
 
 const parseFormattedNumber = (value: string): number => {
@@ -38,7 +38,7 @@ const SpreadTable = ({
   data, 
   onDataChange, 
   currentVolume,
-  isContingencyActive = false // Default to false if not provided
+  isContingencyActive = false
 }: SpreadTableProps) => {
   const [tableData, setTableData] = useState<SpreadTableRowProps[]>(data);
   const [editingRows, setEditingRows] = useState<Record<string, boolean>>({});
@@ -139,7 +139,6 @@ const SpreadTable = ({
     console.log(`Row ${row.id}: Min=${parseFormattedNumber(row.exposureMin)}, Max=${parseFormattedNumber(row.exposureMax)}, IsActive=${isVolumeInRange(row)}`);
   });
 
-  // Check if the row is the first one (0,00 to 1.000.000,00)
   const isFirstRow = (row: SpreadTableRowProps): boolean => {
     return row.exposureMin === "0,00" && row.exposureMax === "1.000.000,00";
   };
@@ -167,11 +166,14 @@ const SpreadTable = ({
                   key={row.id} 
                   className={`transition-colors ${
                     isBlueHighlighted 
-                      ? "bg-blue-50 border-l-4 border-l-blue-500" 
+                      ? "border-l-4 border-l-blue-500" 
                       : isActive 
-                        ? "bg-green-50 border-l-4 border-l-green-500" 
+                        ? "border-l-4 border-l-green-500" 
                         : ""
                   }`}
+                  style={{
+                    backgroundColor: isActive ? '#87BAFF' : (isBlueHighlighted ? '#EFF6FF' : ''),
+                  }}
                 >
                   <TableCell>
                     {editingRows[row.id] && !isContingencyActive ? (
@@ -181,7 +183,7 @@ const SpreadTable = ({
                           onChange={(e) => handleChange(row.id, 'exposureMin', e.target.value)}
                           className="w-[120px]"
                         />
-                        <span>a</span>
+                        <span className={isActive ? "text-white" : ""}>a</span>
                         <Input 
                           value={row.exposureMax}
                           onChange={(e) => handleChange(row.id, 'exposureMax', e.target.value)}
@@ -190,19 +192,19 @@ const SpreadTable = ({
                       </div>
                     ) : (
                       <div className="flex items-center">
-                        <span className={isBlueHighlighted ? "text-blue-700" : ""}>
+                        <span className={isActive ? "text-white" : (isBlueHighlighted ? "text-blue-700" : "")}>
                           {row.exposureMin} a {row.exposureMax}
                         </span>
-                        {isActive && !isBlueHighlighted && (
-                          <span className="ml-2 text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">Ativo</span>
+                        {isActive && (
+                          <span className="ml-2 text-xs px-2 py-1 bg-white text-blue-600 rounded-full font-medium">Ativo</span>
                         )}
-                        {isBlueHighlighted && (
+                        {isBlueHighlighted && !isActive && (
                           <span className="ml-2 text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">Ativo</span>
                         )}
                       </div>
                     )}
                   </TableCell>
-                  <TableCell className={isBlueHighlighted ? "text-blue-700" : ""}>
+                  <TableCell className={isActive ? "text-white" : (isBlueHighlighted ? "text-blue-700" : "")}>
                     {editingRows[row.id] && !isContingencyActive ? (
                       <Input 
                         value={row.spreadIncrease}
@@ -218,7 +220,13 @@ const SpreadTable = ({
                         variant="ghost" 
                         size="sm" 
                         onClick={() => handleEdit(row.id)}
-                        className={isBlueHighlighted ? "text-blue-700 hover:text-blue-800 hover:bg-blue-100" : ""}
+                        className={
+                          isActive 
+                            ? "text-white hover:text-gray-200 hover:bg-blue-500/20" 
+                            : isBlueHighlighted 
+                              ? "text-blue-700 hover:text-blue-800 hover:bg-blue-100" 
+                              : ""
+                        }
                       >
                         {editingRows[row.id] ? "Salvar" : "Editar"}
                       </Button>
